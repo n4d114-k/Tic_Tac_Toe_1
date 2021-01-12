@@ -1,0 +1,219 @@
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+
+:root {
+  --light-red: #991608;
+  --dark-red: #991608;
+  --light-blue: #07BED6;
+  --dark-blue: #00A1AD;
+  --pale-silver: #C9C6B1;
+  --laurel-green: #B2AF9A;
+  --isabelline-gray: #eeeeee;
+  --paynes-gray: #393e46;
+}
+
+/* Main Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+}
+
+body {
+  font-family: "Oswald", sans-serif;
+  background-color: var(--isabelline-gray);
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#root {
+
+}
+
+.logo-wrapper {
+  background-color: var(--dark-blue);
+}
+
+h1 {
+  color: var(--isabelline-gray);
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-msg {
+  margin-bottom: 20px;
+  color: var(--light-red);
+}
+
+/* Login Page Styles */
+
+.login-wrapper {
+  margin: 20vh 35vw 0 35vw;
+}
+
+.login-card {
+  border: 2px solid var(--dark-blue);
+  border-radius: 20px;
+  padding: 20px;
+  color: var(--dark-blue);
+  display: flex;
+  flex-direction: column;
+}
+
+.login-card input {
+  margin-bottom: 2vh;
+  background-color: transparent;
+  border: none;
+  border-bottom:  1px solid var(--light-blue);
+  font-family: inherit;
+  color: var(--paynes-gray);
+}
+
+.login-card button {
+  margin: 2vh 0;
+  border: 2px solid var(--dark-blue);
+  border-radius: 20px;
+  color: var(--dark-blue);
+  font-family: inherit;
+}
+
+.login-card button:hover {
+  cursor: pointer;
+  border: 2px solid var(--dark-blue);
+  background-color: var(--dark-blue);
+  color: var(--isabelline-gray);
+}
+
+.link-wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+a {
+  text-decoration: none;
+  padding: 0 10px;
+  color: var(--isabelline-gray);
+  background-color: var(--light-red);
+  border-radius: 15px;
+}
+
+.badge-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.badge {
+  cursor: pointer;
+  background-color: var(--light-red);
+  font-size: 14px;
+  margin: 0 3px 10px 2px;
+}
+
+
+/* Game Page Styles */
+
+.game {
+  margin: 0 30%;
+}
+
+.card-body {
+  padding: 20% 20% 0 20%;
+}
+
+.row-container {
+  border: 1px solid var(--dark-blue);
+  margin: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.board-cell {
+  font-family: sans-serif;
+  height: 70px;
+  width: 70px;
+  border: 1px solid var(--dark-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--dark-red);
+}
+
+.game button {
+  margin: 2vh 1vw;
+  padding: 0 10px;
+  border: 2px solid var(--light-red);
+  border-radius: 20px;
+  color: var(--light-red);
+  font-family: inherit;
+}
+
+ .game button:hover {
+  cursor: pointer;
+  border: 2px solid var(--light-red);
+  background-color: var(--light-red);
+  color: var(--isabelline-gray);
+}
+
+.info-bar {
+  color: var(--paynes-gray);
+  display: inline-flex;
+  margin: 2vh 0 0 6vw;
+}
+
+.info-bar > div {
+  margin: 0 1vw;
+  border: 2px solid var(--dark-blue);
+  border-radius: 20px;
+  padding: 10px;
+}
+
+/* MODAL STYLES */
+
+.modal-dialog {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 20px 35vw;
+}
+
+.modal-content {
+  border: 2px solid var(--light-red);
+  border-radius: 20px;
+  padding: 20px
+}
+
+.modal-title {
+  color: var(--light-red);
+}
+
+.modal-content button {
+  border: 2px solid var(--light-red);
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: var(--light-red);
+  font-family: inherit;
+}
+
+.modal-content button:first-child {
+  margin-right: 10px;
+}
+
+.modal-content button:hover {
+  cursor: pointer;
+  border: 2px solid var(--light-red);
+  background-color: var(--light-red);
+  color: var(--isabelline-gray);
+}

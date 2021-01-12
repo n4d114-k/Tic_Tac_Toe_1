@@ -1,0 +1,40 @@
+{
+  "name": "tic_tac_toe",
+  "version": "1.0.0",
+  "description": "Tic Tac Toe with Node.js, Socket.io & Express",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "server": "nodemon app.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n4d114-k/Tic_Tac_Toe.git"
+  },
+  "keywords": [
+    "node-js",
+    "express-js",
+    "socket-io",
+    "react"
+  ],
+  "author": "Nadiia K. <nadiia.k@pm.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/n4d114-k/Tic_Tac_Toe/issues"
+  },
+  "homepage": "https://github.com/n4d114-k/Tic_Tac_Toe#readme",
+  "dependencies": {
+    "config": "^3.3.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "path": "^0.12.7",
+    "socket.io": "^3.0.5"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.6"
+  }
+}
