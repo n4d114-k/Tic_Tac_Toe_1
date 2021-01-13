@@ -36,7 +36,7 @@ function Board({ location }) {
         clicked = false;
       }
       if (socket && newgame) {
-        socket.emit('newGame', { room, squares });
+        socket.emit('newGame', { room, newGame });
         newgame = false;
       }
     }
@@ -106,7 +106,6 @@ function Board({ location }) {
 
   useEffect(() => {
     socket.on('getSquaresMap', (getSquaresMap) => {
-      console.log('getSquaresMap');
       if (Array.isArray(getSquaresMap)) {
         setSquares(getSquaresMap);
       }
@@ -132,27 +131,7 @@ function Board({ location }) {
   useEffect(() => {
     socket.on('sendSquares', (squares) => {
       setSquares(squares);
-      const win = calculateWinner(squares);
-      if (win) {
-        let player1Score = score[0];
-        let player2Score = score[1];
-        if (win === 'X') {
-          player1Score += 1;
-        } else {
-          player2Score += 1;
-        }
-        setScore([player1Score, player2Score]);
-        setShow(true);
-        const winnerName =
-          win === myStats.type ? myStats.name : oponentStats.name;
-        setModal([1, `Winner is ${winnerName}!`, winnerName]);
-      } else {
-        const emptySquares = squares.filter((square) => square === null).length;
-        if (emptySquares === 0) {
-          setShow(true);
-          setModal([1, 'It\'s a draw']);
-        }
-      }
+      
     });
   }, [score, setSquares, myStats, oponentStats, alert]);
 
@@ -168,16 +147,16 @@ function Board({ location }) {
       squares[event.target.id] === null &&
       clicked === false
     ) {
+
       const newSquares = squares.slice();
       newSquares[event.target.id] = myStats.type;
       clicked = true;
-      setSquares(newSquares);
+      socket.emit('sendSquares',{ room, newSquares })
     }
   };
 
   const newGame = () => {
     newgame = true;
-    setSquares(Array(9).fill(null));
     setShow(false);
   };
 
@@ -185,29 +164,6 @@ function Board({ location }) {
     setShow(false);
   };
 
-  function calculateWinner(squares) {
-    const lines = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a];
-      }
-    }
-    return null;
-  }
   return (
     <div className='game-wrapper'>
       <Card className='game'>

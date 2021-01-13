@@ -24,7 +24,7 @@ const setSquaresMapArray = (room, squares) => {
   return squaresMap
 }
 
-const addUser = ({ id, name, room }) => {
+const addUser = ({ id, name, room, score = 0 }) => {
   name = name.trim().toLowerCase()
   room = room.trim().toLowerCase()
   if (!rooms.hasOwnProperty(room)) {
@@ -54,13 +54,14 @@ const addUser = ({ id, name, room }) => {
   }
 
   rooms['roomStep'] = { ...rooms['roomStep'], [room]: step }
-  rooms[room].push({ id, name, room, type, player })
+  rooms[room].push({ id, name, room, type, player, score })
   const user = {
     id,
     name,
     room,
     type,
     player,
+    score,
     currentRoom: rooms[room],
     roomStep: rooms['roomStep'][room]
   }
@@ -97,7 +98,7 @@ const removeUserByID = (id) => {
   return roomData
 }
 
-const calculateWinner = (squares) => {
+  const calculateWinner = (squares) => {
 
     const lines = [
       [0, 1, 2],
@@ -112,16 +113,41 @@ const calculateWinner = (squares) => {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i]
       if (
-        squaresMap.get(parseInt(user.room))[a] &&
-        squaresMap.get(parseInt(user.room))[a] === squaresMap.get(parseInt(user.room))[b] &&
-        squaresMap.get(parseInt(user.room))[a] === squaresMap.get(parseInt(user.room))[c]
+        squares[a] &&
+        squares[a] === squares[b] &&
+        squares[a] === squares[c]
       ) {
-        return squaresMap.get(parseInt(user.room))[a]
+        return squares[a]
       }
     }
     return null
 
   }
+
+  const showResults = (func, squares) => {
+
+      const win = func(squares)
+      if (win) {
+        if (win === 'X') {
+          room[0].score += 1
+        } else {
+          room[1].score += 1
+        }
+        
+        let setShow = true
+
+        const winnerName =
+          win === 'X' ? room[0] : room[1]
+
+        setModal([1, `Winner is ${winnerName}!`, winnerName])
+      } else {
+        const emptySquares = squares.filter((square) => square === null).length
+        if (emptySquares === 0) {
+          setShow(true)
+          setModal([1, 'It\'s a draw'])
+        }
+      }
+    }
 
   const getTurn = (room) => {
     let turn = ''
@@ -157,6 +183,7 @@ const newGame = (room) => {
     const step = rooms['roomStep'][room] > 1 ? -1 : Math.round(Math.random())
     rooms['roomStep'][room] = step
     console.log(step)
+    squaresMap.set(parseInt(room), Array(9).fill(null))
     if (typeof rooms[room][step % 2] !== 'undefined') {
       turn = step !== -1 ? rooms[room][step % 2].id : ''
     }

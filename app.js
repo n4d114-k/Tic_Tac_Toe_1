@@ -76,15 +76,20 @@ io.on('connect', (socket) => {
     const sendTurn = nextTurn(room)
     setSquaresMapArray(parseInt(room), squares)
     console.log(squaresMap)
+    const win = calculateWinner(squares)
     io.in(room).emit('sendTurn', sendTurn)
     io.in(room).emit('sendSquares', squares)
+  })
+
+  socket.on('sendSquares', ({room, newSquares}) => {
+    io.in(room).emit('sendSquares', newSquares)
   })
 
   socket.on('newGame', ({ room, squares }) => {
     console.log(`New game in room ${room}`)
     const sendTurn = newGame(room)
     io.in(room).emit('sendTurn', sendTurn)
-    io.in(room).emit('sendSquares', squares)
+    io.in(room).emit('sendSquares', getSquaresMap(parseInt(room)))
   })
 
   socket.on('leaveRoom', () => {
