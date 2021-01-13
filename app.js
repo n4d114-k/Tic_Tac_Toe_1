@@ -16,6 +16,9 @@ app.get("/", (req, res) => {
 });
 
 const {
+  squaresMap,
+  addToSquaresMap,
+  removeFromSquaresMap,
   addUser,
   removeUser,
   removeUserByID,
@@ -27,7 +30,15 @@ const {
 io.on('connect', (socket) => {
   console.log(`Connection to server established with socket.id: ${socket.id}`)
 
-  socket.on('getRoom', (room, callback) => {
+  const roomsAvailable = Object.keys(rooms).filter(
+    (key) => key !== 'roomStep'
+  )
+
+    //console.log('data***************', roomsAvailable)
+
+    socket.on('getRoom', (room, callback) => {
+    addToSquaresMap(room)
+    console.log(squaresMap)
     const roomExists = Object.keys(rooms).filter((element) => {
       return element === room
     })
@@ -37,7 +48,6 @@ io.on('connect', (socket) => {
       return callback({ error: `Room ${room} does not exist.` })
     }
   })
-
   socket.on('join', ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room })
     if (error) return callback(error)
@@ -77,6 +87,8 @@ io.on('connect', (socket) => {
     const roomsAvailable = Object.keys(rooms).filter(
       (key) => key !== 'roomStep'
     )
+    const roomToRemove = parseInt([...socket.rooms][1])
+    removeFromSquaresMap(roomToRemove)
     socket.broadcast.emit('roomsAvailable', roomsAvailable)
   })
 
@@ -91,9 +103,6 @@ io.on('connect', (socket) => {
   })
 
   socket.on('getRoomsAvailable', (data, callback) => {
-    const roomsAvailable = Object.keys(rooms).filter(
-      (key) => key !== 'roomStep'
-    )
     return callback(roomsAvailable)
   })
 })

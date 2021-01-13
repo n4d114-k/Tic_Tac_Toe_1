@@ -1,5 +1,19 @@
 rooms = {}
 
+let squaresMap = new Map();
+//squaresMap.set(roomName, newMatrix)
+//console.log(`${squaresMap.get(roomName)}`)
+
+const addToSquaresMap = (room) => {
+  squaresMap.set(room[0], Array(9).fill(null))
+  return squaresMap
+}
+
+const removeFromSquaresMap = (room) => {
+  squaresMap.delete(room)
+  return squaresMap
+}
+
 const addUser = ({ id, name, room }) => {
   name = name.trim().toLowerCase()
   room = room.trim().toLowerCase()
@@ -119,6 +133,9 @@ const newGame = (room) => {
 
 
 module.exports = {
+  squaresMap,
+  addToSquaresMap,
+  removeFromSquaresMap,
   addUser,
   removeUser,
   removeUserByID,
