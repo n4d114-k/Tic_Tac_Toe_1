@@ -1,6 +1,6 @@
 rooms = {}
 
-let squaresMap = new Map();
+let squaresMap = new Map()
 //squaresMap.set(roomName, newMatrix)
 //console.log(`${squaresMap.get(roomName)}`)
 
@@ -11,6 +11,16 @@ const addToSquaresMap = (room) => {
 
 const removeFromSquaresMap = (room) => {
   squaresMap.delete(room)
+  return squaresMap
+}
+
+const getSquaresMap = (room) => {
+  return squaresMap.get(room)
+}
+
+const setSquaresMapArray = (room, squares) => {
+  squaresMap.delete(room)
+  squaresMap.set(room, squares)
   return squaresMap
 }
 
@@ -87,17 +97,43 @@ const removeUserByID = (id) => {
   return roomData
 }
 
-const getTurn = (room) => {
-  let turn = ''
-  if (room !== '') {
-    let step = rooms['roomStep'][room]
-    if (typeof rooms[room][step % 2] !== 'undefined') {
-      if (rooms['roomStep'][room] !== -1) {
-        turn = rooms[room][step % 2].id
+const calculateWinner = (squares) => {
+
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ]
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i]
+      if (
+        squaresMap.get(parseInt(user.room))[a] &&
+        squaresMap.get(parseInt(user.room))[a] === squaresMap.get(parseInt(user.room))[b] &&
+        squaresMap.get(parseInt(user.room))[a] === squaresMap.get(parseInt(user.room))[c]
+      ) {
+        return squaresMap.get(parseInt(user.room))[a]
       }
     }
+    return null
+
   }
-  return turn
+
+  const getTurn = (room) => {
+    let turn = ''
+    if (room !== '') {
+      let step = rooms['roomStep'][room]
+      if (typeof rooms[room][step % 2] !== 'undefined') {
+        if (rooms['roomStep'][room] !== -1) {
+          turn = rooms[room][step % 2].id
+        }
+      }
+    }
+    return turn
 }
 
 const nextTurn = (room) => {
@@ -136,9 +172,12 @@ module.exports = {
   squaresMap,
   addToSquaresMap,
   removeFromSquaresMap,
+  getSquaresMap,
+  setSquaresMapArray,
   addUser,
   removeUser,
   removeUserByID,
+  calculateWinner,
   getTurn,
   nextTurn,
   newGame,

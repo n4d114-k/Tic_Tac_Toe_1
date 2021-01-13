@@ -19,9 +19,12 @@ const {
   squaresMap,
   addToSquaresMap,
   removeFromSquaresMap,
+  getSquaresMap,
+  setSquaresMapArray,
   addUser,
   removeUser,
   removeUserByID,
+  calculateWinner,
   getTurn,
   nextTurn,
   newGame,
@@ -33,8 +36,6 @@ io.on('connect', (socket) => {
   const roomsAvailable = Object.keys(rooms).filter(
     (key) => key !== 'roomStep'
   )
-
-    //console.log('data***************', roomsAvailable)
 
     socket.on('getRoom', (room, callback) => {
     addToSquaresMap(room)
@@ -48,10 +49,12 @@ io.on('connect', (socket) => {
       return callback({ error: `Room ${room} does not exist.` })
     }
   })
+
   socket.on('join', ({ name, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, name, room })
     if (error) return callback(error)
     socket.join(user.room)
+    io.in(user.room).emit('getSquaresMap', squaresMap.get(parseInt(user.room)))
     socket.broadcast.to(user.room).emit('roomData', user)
     const roomsAvailable = Object.keys(rooms).filter(
       (key) => key !== 'roomStep'
@@ -71,6 +74,8 @@ io.on('connect', (socket) => {
   socket.on('nextTurn', ({ room, squares }) => {
     console.log(`Next turn ${room}`)
     const sendTurn = nextTurn(room)
+    setSquaresMapArray(parseInt(room), squares)
+    console.log(squaresMap)
     io.in(room).emit('sendTurn', sendTurn)
     io.in(room).emit('sendSquares', squares)
   })

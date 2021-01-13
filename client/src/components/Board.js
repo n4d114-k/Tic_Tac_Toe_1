@@ -29,7 +29,7 @@ function Board({ location }) {
   const [fullRoom, setFullRoom] = useState(false);
   const [turn, setTurn] = useState('');
   const [squares, setSquares] = useStateWithCallback(
-    Array(9).fill(null),
+    '',
     () => {
       if (socket && clicked) {
         socket.emit('nextTurn', { room, squares });
@@ -103,6 +103,15 @@ function Board({ location }) {
       }
     });
   }, [myStats, currentRoom]);
+
+  useEffect(() => {
+    socket.on('getSquaresMap', (getSquaresMap) => {
+      console.log('getSquaresMap');
+      if (Array.isArray(getSquaresMap)) {
+        setSquares(getSquaresMap);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     socket.on('leave', () => {
