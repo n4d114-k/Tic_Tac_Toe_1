@@ -13,7 +13,6 @@ import ModalAlert from './ModalAlert';
 
 let socket;
 let clicked = false;
-let newgame = false;
 
 function Board({ location }) {
   const alert = useAlert();
@@ -25,19 +24,15 @@ function Board({ location }) {
   const [oponentStats, setOponentStats] = useState([]);
   const [currentRoom, setCurrentRoom] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
-  const [score, setScore] = useState([0, 0]);
   const [fullRoom, setFullRoom] = useState(false);
   const [turn, setTurn] = useState('');
+  const [win, setWin] = useState(null);
   const [squares, setSquares] = useStateWithCallback(
     '',
     () => {
       if (socket && clicked) {
         socket.emit('nextTurn', { room, squares });
         clicked = false;
-      }
-      if (socket && newgame) {
-        socket.emit('newGame', { room, newGame });
-        newgame = false;
       }
     }
   );
@@ -78,15 +73,20 @@ function Board({ location }) {
   }, [location.search]);
 
   useEffect(() => {
+    socket.on('getSquaresMap', (getSquaresMap) => {
+      if (Array.isArray(getSquaresMap)) {
+        setSquares(getSquaresMap);
+      }
+    });
+  }, [setSquares]);
+
+  useEffect(() => {
     if (currentRoom.length === 2) {
       setFullRoom(true);
       socket.emit('getTurn', room);
     } else {
       setFullRoom(false);
     }
-  }, [currentRoom, room]);
-
-  useEffect(() => {
     socket.on('roomData', (roomData) => {
       if (roomData) {
         if (roomData.currentRoom.length > 1) {
@@ -102,15 +102,7 @@ function Board({ location }) {
         setCurrentRoom(roomData.currentRoom);
       }
     });
-  }, [myStats, currentRoom]);
-
-  useEffect(() => {
-    socket.on('getSquaresMap', (getSquaresMap) => {
-      if (Array.isArray(getSquaresMap)) {
-        setSquares(getSquaresMap);
-      }
-    });
-  }, []);
+  }, [myStats, currentRoom, room]);
 
   useEffect(() => {
     socket.on('leave', () => {
@@ -128,12 +120,29 @@ function Board({ location }) {
     return () => socket.close();
   }, []);
 
+
   useEffect(() => {
-    socket.on('sendSquares', (squares) => {
-      setSquares(squares);
-      
+    socket.on('sendWin', (win) => {
+      if (win) {
+        setWin(win);
+      }
     });
-  }, [score, setSquares, myStats, oponentStats, alert]);
+    socket.on('sendSquares', (squares) => {
+    setSquares(squares);
+    if (win) {
+      setShow(true);
+      const winnerName =
+        win === myStats.type ? myStats.name : oponentStats.name;
+        setModal([1, `Winner is ${winnerName}!`, winnerName]);
+    } else {
+      const emptySquares = squares.filter((square) => square === null).length;
+      if (emptySquares === 0) {
+        setShow(true);
+        setModal([1, 'It\'s a draw']);
+      }
+    }
+  });
+}, [win, setSquares, myStats, oponentStats, alert]);
 
   const leaveRoom = () => {
     socket.emit('leaveRoom');
@@ -153,11 +162,6 @@ function Board({ location }) {
       clicked = true;
       socket.emit('sendSquares',{ room, newSquares })
     }
-  };
-
-  const newGame = () => {
-    newgame = true;
-    setShow(false);
   };
 
   const handleClose = () => {
@@ -194,7 +198,7 @@ function Board({ location }) {
         </Card.Body>
         <Card.Footer>
           {errorMsg === '' ? (
-            <InfoBar currentRoom={currentRoom} score={score} yourID={myStats.id} turn={turn} />
+            <InfoBar currentRoom={currentRoom} yourID={myStats.id} turn={turn} />
           ) : null}
         </Card.Footer>
       </Card>
@@ -205,10 +209,8 @@ function Board({ location }) {
             handleClose={handleClose}
             title={`${modal[1]}`}
             body={`You Won!`}
-            button2='New Game'
-            action2={newGame}
-            button1='Leave the Room'
-            action1={leaveRoom}
+            button='Leave the Room'
+            action={leaveRoom}
           />
       ) : null}
       <p style={{ display: 'none' }}>{fullRoom}</p>

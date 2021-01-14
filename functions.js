@@ -24,7 +24,7 @@ const setSquaresMapArray = (room, squares) => {
   return squaresMap
 }
 
-const addUser = ({ id, name, room, score = 0 }) => {
+const addUser = ({ id, name, room }) => {
   name = name.trim().toLowerCase()
   room = room.trim().toLowerCase()
   if (!rooms.hasOwnProperty(room)) {
@@ -54,14 +54,13 @@ const addUser = ({ id, name, room, score = 0 }) => {
   }
 
   rooms['roomStep'] = { ...rooms['roomStep'], [room]: step }
-  rooms[room].push({ id, name, room, type, player, score })
+  rooms[room].push({ id, name, room, type, player })
   const user = {
     id,
     name,
     room,
     type,
     player,
-    score,
     currentRoom: rooms[room],
     roomStep: rooms['roomStep'][room]
   }
@@ -124,31 +123,6 @@ const removeUserByID = (id) => {
 
   }
 
-  const showResults = (func, squares) => {
-
-      const win = func(squares)
-      if (win) {
-        if (win === 'X') {
-          room[0].score += 1
-        } else {
-          room[1].score += 1
-        }
-        
-        let setShow = true
-
-        const winnerName =
-          win === 'X' ? room[0] : room[1]
-
-        setModal([1, `Winner is ${winnerName}!`, winnerName])
-      } else {
-        const emptySquares = squares.filter((square) => square === null).length
-        if (emptySquares === 0) {
-          setShow(true)
-          setModal([1, 'It\'s a draw'])
-        }
-      }
-    }
-
   const getTurn = (room) => {
     let turn = ''
     if (room !== '') {
@@ -177,23 +151,6 @@ const nextTurn = (room) => {
   return turn
 }
 
-const newGame = (room) => {
-  let turn = 'none'
-  if (room !== '') {
-    const step = rooms['roomStep'][room] > 1 ? -1 : Math.round(Math.random())
-    rooms['roomStep'][room] = step
-    console.log(step)
-    squaresMap.set(parseInt(room), Array(9).fill(null))
-    if (typeof rooms[room][step % 2] !== 'undefined') {
-      turn = step !== -1 ? rooms[room][step % 2].id : ''
-    }
-  }
-  console.log(turn)
-
-  return turn
-}
-
-
 
 module.exports = {
   squaresMap,
@@ -207,5 +164,4 @@ module.exports = {
   calculateWinner,
   getTurn,
   nextTurn,
-  newGame,
 }

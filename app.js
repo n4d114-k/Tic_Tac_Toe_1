@@ -27,7 +27,6 @@ const {
   calculateWinner,
   getTurn,
   nextTurn,
-  newGame,
 } = require('./functions.js')
 
 io.on('connect', (socket) => {
@@ -65,7 +64,7 @@ io.on('connect', (socket) => {
   })
 
   socket.on('getTurn', (room) => {
-    console.log(`Get turn in ${room} ${socket.id}`)
+    console.log(`Get turn in ${room}`)
     const sendTurn = getTurn(room)
     socket.to(room).emit('sendTurn', sendTurn)
     console.log(sendTurn)
@@ -77,19 +76,14 @@ io.on('connect', (socket) => {
     setSquaresMapArray(parseInt(room), squares)
     console.log(squaresMap)
     const win = calculateWinner(squares)
+    console.log('The winner is', win)
     io.in(room).emit('sendTurn', sendTurn)
+    io.in(room).emit('sendWin', win)
     io.in(room).emit('sendSquares', squares)
   })
 
   socket.on('sendSquares', ({room, newSquares}) => {
     io.in(room).emit('sendSquares', newSquares)
-  })
-
-  socket.on('newGame', ({ room, squares }) => {
-    console.log(`New game in room ${room}`)
-    const sendTurn = newGame(room)
-    io.in(room).emit('sendTurn', sendTurn)
-    io.in(room).emit('sendSquares', getSquaresMap(parseInt(room)))
   })
 
   socket.on('leaveRoom', () => {

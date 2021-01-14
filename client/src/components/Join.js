@@ -15,8 +15,6 @@ function Join() {
   const [name, setName] = useState(
     `Player${[Math.floor(Math.random() * (99999 - 1000)) + 1000]}`
   );
-  const [roomJoin, setRoomJoin] = useState('');
-  const [canContinueJoin, setcanContinueJoin] = useState(false);
   const [canContinueCreate, setcanContinueCreate] = useState(false);
   const [roomsAvailable, setRoomsAvailable] = useState([]);
 
@@ -31,18 +29,6 @@ function Join() {
       socket.close();
     };
   }, []);
-
-  const joinRoom = () => {
-    socket.emit('getRoom', roomJoin, (callback) => {
-      if (callback) {
-        if (typeof callback === 'object') {
-          alert.error(callback.error);
-        } else {
-          setcanContinueJoin(true);
-        }
-      }
-    });
-  };
 
   const createRoom = () => {
     socket.emit('getRoom', room, (callback) => {
@@ -72,9 +58,6 @@ function Join() {
           <label htmlFor='create-room'>Create Room</label>
           <input id='create-room' type='number' value={room} onChange={(event) => setRoom(event.target.value)}  />
           <button onClick={createRoom}>Create Room</button>
-          <label htmlFor='join-room'>Join the Room</label>
-          <input id='join-room' type='number' onChange={(event) => setRoomJoin(event.target.value)} />
-          <button onClick={joinRoom}>Join</button>
           <label>Available Rooms: </label>
           <div className='badge-wrapper'>
             {roomsAvailable.map((value, index) => {
@@ -87,9 +70,6 @@ function Join() {
           </div>
         </div>
       </div>
-      {canContinueJoin ? (
-        <Redirect to={`/game?room=${roomJoin}&name=${name}`} />
-      ) : null}
       {canContinueCreate ? (
         <Redirect to={`/game?room=${room}&name=${name}`} />
       ) : null}

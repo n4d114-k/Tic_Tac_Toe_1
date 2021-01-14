@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 
-function InfoBar({ currentRoom, score, yourID, turn }) {
+function InfoBar({ currentRoom, yourID, turn }) {
   const [player1, setPlayer1] = useState([]);
   const [player2, setPlayer2] = useState([]);
 
@@ -32,9 +32,6 @@ function InfoBar({ currentRoom, score, yourID, turn }) {
     <div className='info-bar'>
       <div>
         <p>{player1[1]}<br />{gameTurn(player1[0])}</p>
-      </div>
-      <div>
-        <p className='score-board'>{score[0]}:{score[1]}</p>
       </div>
       <div>
         <p>{player2[1]}<br />{gameTurn(player2[0])}</p>

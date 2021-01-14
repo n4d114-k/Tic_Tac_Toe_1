@@ -185,17 +185,18 @@ a {
   display: flex;
   flex-direction: column;
   text-align: center;
-  padding: 20px 35vw;
+  padding: 10px 35vw;
 }
 
 .modal-content {
   border: 2px solid var(--light-red);
   border-radius: 20px;
-  padding: 20px
+  padding-top: 15px;
 }
 
 .modal-title {
   color: var(--light-red);
+  margin-bottom: 20px;
 }
 
 .modal-content button {
