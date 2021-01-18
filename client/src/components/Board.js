@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router';
 import queryString from 'query-string';
 import io from 'socket.io-client';
-import { Card, Col, Row } from 'react-bootstrap';
 import useStateWithCallback from 'use-state-with-callback';
 import { useAlert } from 'react-alert';
 
@@ -164,53 +163,31 @@ function Board({ location }) {
   const handleClose = () => {
     setShow(false);
   };
-  
+
   return (
     <div className='game-wrapper'>
-      <Card className='game'>
-        <Card.Body>
-          <p>{errorMsg}</p>
-          <Row>
-            <Col className='d-flex justify-content-center'>
-              <div className='row-container'>
-                <div className='row'>
-                  <Square id='0' value={squares[0]} handleClick={handleClick} />
-                  <Square id='1' value={squares[1]} handleClick={handleClick} />
-                  <Square id='2' value={squares[2]} handleClick={handleClick} />
-                </div>
-                <div className='row'>
-                  <Square id='3' value={squares[3]} handleClick={handleClick} />
-                  <Square id='4' value={squares[4]} handleClick={handleClick} />
-                  <Square id='5' value={squares[5]} handleClick={handleClick} />
-                </div>
-                <div className='row'>
-                  <Square id='6' value={squares[6]} handleClick={handleClick} />
-                  <Square id='7' value={squares[7]} handleClick={handleClick} />
-                  <Square id='8' value={squares[8]} handleClick={handleClick} />
-                </div>
-              </div>
-            </Col>
-          </Row>
-          <button onClick={leaveRoom}>Leave Room</button>
-        </Card.Body>
-        <Card.Footer>
-          {errorMsg === '' ? (
-            <InfoBar currentRoom={currentRoom} yourID={myStats.id} turn={turn} />
-          ) : null}
-        </Card.Footer>
-      </Card>
-      {leave ? <Redirect to='/' /> : null}
-      {modal[0] === 1 ? (
-        <ModalAlert
-            show={show}
-            handleClose={handleClose}
-            title={`${modal[1]}`}
-            body={`You Won!`}
-            button='Leave the Room'
-            action={leaveRoom}
-          />
-      ) : null}
-      <p style={{ display: 'none' }}>{fullRoom}</p>
+      <p>{errorMsg}</p>
+      <div className='game'>
+        {!Array.isArray(squares) ? <p>Loading</p> : squares.map((square, key) => (
+          <Square key={key} id={key} value={square} handleClick={handleClick} />
+        ))}
+      </div>
+      <button onClick={leaveRoom}>Leave Room</button>
+        {errorMsg === '' ? (
+          <InfoBar currentRoom={currentRoom} yourID={myStats.id} turn={turn} />
+        ) : null}
+        {leave ? <Redirect to='/' /> : null}
+        {modal[0] === 1 ? (
+          <ModalAlert
+              show={show}
+              handleClose={handleClose}
+              title={`${modal[1]}`}
+              body={`You Won!`}
+              button='Leave the Room'
+              action={leaveRoom}
+            />
+        ) : null}
+        <p style={{ display: 'none' }}>{fullRoom}</p>
     </div>
   );
 }

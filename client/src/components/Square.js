@@ -1,9 +1,9 @@
 import React from "react";
 
-function Square(props) {
+function Square({id, value, handleClick}) {
   return (
-    <div className='board-cell' id={props.id} onClick={props.handleClick}>
-      {props.value}
+    <div className='board-cell' id={id} onClick={handleClick}>
+      {value}
     </div>
   );
 }
