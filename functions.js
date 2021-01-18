@@ -108,22 +108,24 @@ const removeUserByID = (id) => {
       [0, 4, 8],
       [2, 4, 6],
     ]
-
-    const emptySquares = squares.filter((square) => square === null).length
-
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i]
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a]
-      } else if (emptySquares === 0) {
-        return 'draw'
-      }
+console.log(squares);
+    const hesEmptySquares = squares.findIndex((square) => !square) > -1;
+    console.log('hesEmptySquares', hesEmptySquares);
+    const winer = lines.find(([a, b, c]) => {
+        if (
+          squares[a] &&
+          squares[a] === squares[b] &&
+          squares[a] === squares[c]
+        ) {
+          return squares[a]
+        }
+    })
+    if(winer) {
+      return winer
+    } else if (!hesEmptySquares) {
+      return 'draw';
     }
-    return null
+    return null;
   }
 
   const getTurn = (room) => {
@@ -133,7 +135,6 @@ const removeUserByID = (id) => {
       if (typeof rooms[room][step % 2] !== 'undefined') {
         if (rooms['roomStep'][room] !== -1) {
           turn = rooms[room][step % 2].id
-          console.log('************', rooms[room][step])
         }
       }
     }
