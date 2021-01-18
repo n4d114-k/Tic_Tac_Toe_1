@@ -164,7 +164,7 @@ function Board({ location }) {
   const handleClose = () => {
     setShow(false);
   };
-console.log(squares);
+  
   return (
     <div className='game-wrapper'>
       <Card className='game'>
