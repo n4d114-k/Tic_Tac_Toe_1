@@ -1,8 +1,7 @@
 rooms = {}
 
 let squaresMap = new Map()
-//squaresMap.set(roomName, newMatrix)
-//console.log(`${squaresMap.get(roomName)}`)
+
 
 const addToSquaresMap = (room) => {
   squaresMap.set(room[0], Array(9).fill(null))
