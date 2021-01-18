@@ -1,8 +1,7 @@
 rooms = {}
 
 let squaresMap = new Map()
-//squaresMap.set(roomName, newMatrix)
-//console.log(`${squaresMap.get(roomName)}`)
+
 
 const addToSquaresMap = (room) => {
   squaresMap.set(room[0], Array(9).fill(null))
@@ -97,7 +96,7 @@ const removeUserByID = (id) => {
   return roomData
 }
 
-  const calculateWinner = (squares) => {
+  const calculateResult = (squares) => {
 
     const lines = [
       [0, 1, 2],
@@ -109,18 +108,24 @@ const removeUserByID = (id) => {
       [0, 4, 8],
       [2, 4, 6],
     ]
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i]
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a]
-      }
+console.log(squares);
+    const hesEmptySquares = squares.findIndex((square) => !square) > -1;
+    console.log('hesEmptySquares', hesEmptySquares);
+    const winer = lines.find(([a, b, c]) => {
+        if (
+          squares[a] &&
+          squares[a] === squares[b] &&
+          squares[a] === squares[c]
+        ) {
+          return squares[a]
+        }
+    })
+    if(winer) {
+      return winer
+    } else if (!hesEmptySquares) {
+      return 'draw';
     }
-    return null
-
+    return null;
   }
 
   const getTurn = (room) => {
@@ -134,22 +139,22 @@ const removeUserByID = (id) => {
       }
     }
     return turn
-}
+  }
 
-const nextTurn = (room) => {
-  let turn = ''
-  if (room !== '') {
-    let step = rooms['roomStep'][room]
-    step = step + 1
-    rooms['roomStep'][room] = step
-    if (typeof rooms[room][step % 2] !== 'undefined') {
-      if (rooms['roomStep'][room] !== -1) {
-        turn = rooms[room][step % 2].id
+  const nextTurn = (room) => {
+    let turn = ''
+    if (room !== '') {
+      let step = rooms['roomStep'][room]
+      step = step + 1
+      rooms['roomStep'][room] = step
+      if (typeof rooms[room][step % 2] !== 'undefined') {
+        if (rooms['roomStep'][room] !== -1) {
+          turn = rooms[room][step % 2].id
+        }
       }
     }
+    return turn
   }
-  return turn
-}
 
 
 module.exports = {
@@ -161,7 +166,7 @@ module.exports = {
   addUser,
   removeUser,
   removeUserByID,
-  calculateWinner,
+  calculateResult,
   getTurn,
   nextTurn,
 }
