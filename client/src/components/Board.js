@@ -26,7 +26,7 @@ function Board({ location }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [fullRoom, setFullRoom] = useState(false);
   const [turn, setTurn] = useState('');
-  const [win, setWin] = useState(null);
+  const [result, setResult] = useState(null);
   const [squares, setSquares] = useStateWithCallback(
     '',
     () => {
@@ -122,27 +122,24 @@ function Board({ location }) {
 
 
   useEffect(() => {
-    socket.on('sendWin', (win) => {
-      if (win) {
-        setWin(win);
+    socket.on('sendResult', (result) => {
+      if (result) {
+        setResult(result);
       }
     });
     socket.on('sendSquares', (squares) => {
     setSquares(squares);
-    if (win) {
+    if (result) {
       setShow(true);
-      const winnerName =
-        win === myStats.type ? myStats.name : oponentStats.name;
-        setModal([1, `Winner is ${winnerName}!`, winnerName]);
-    } else {
-      const emptySquares = squares.filter((square) => square === null).length;
-      if (emptySquares === 0) {
-        setShow(true);
+      if (result === 'draw') {
         setModal([1, 'It\'s a draw']);
+      } else {
+        let winner = myStats.type ? myStats.name : oponentStats.name;
+        setModal([1, `Winner is ${winner}!`, winner]);
       }
     }
   });
-}, [win, setSquares, myStats, oponentStats, alert]);
+}, [result, setSquares, myStats, oponentStats, alert]);
 
   const leaveRoom = () => {
     socket.emit('leaveRoom');
@@ -167,7 +164,7 @@ function Board({ location }) {
   const handleClose = () => {
     setShow(false);
   };
-
+console.log(squares);
   return (
     <div className='game-wrapper'>
       <Card className='game'>

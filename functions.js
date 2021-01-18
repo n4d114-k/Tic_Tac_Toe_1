@@ -96,7 +96,7 @@ const removeUserByID = (id) => {
   return roomData
 }
 
-  const calculateWinner = (squares) => {
+  const calculateResult = (squares) => {
 
     const lines = [
       [0, 1, 2],
@@ -108,6 +108,9 @@ const removeUserByID = (id) => {
       [0, 4, 8],
       [2, 4, 6],
     ]
+
+    const emptySquares = squares.filter((square) => square === null).length
+
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i]
       if (
@@ -116,10 +119,11 @@ const removeUserByID = (id) => {
         squares[a] === squares[c]
       ) {
         return squares[a]
+      } else if (emptySquares === 0) {
+        return 'draw'
       }
     }
     return null
-
   }
 
   const getTurn = (room) => {
@@ -129,26 +133,27 @@ const removeUserByID = (id) => {
       if (typeof rooms[room][step % 2] !== 'undefined') {
         if (rooms['roomStep'][room] !== -1) {
           turn = rooms[room][step % 2].id
+          console.log('************', rooms[room][step])
         }
       }
     }
     return turn
-}
+  }
 
-const nextTurn = (room) => {
-  let turn = ''
-  if (room !== '') {
-    let step = rooms['roomStep'][room]
-    step = step + 1
-    rooms['roomStep'][room] = step
-    if (typeof rooms[room][step % 2] !== 'undefined') {
-      if (rooms['roomStep'][room] !== -1) {
-        turn = rooms[room][step % 2].id
+  const nextTurn = (room) => {
+    let turn = ''
+    if (room !== '') {
+      let step = rooms['roomStep'][room]
+      step = step + 1
+      rooms['roomStep'][room] = step
+      if (typeof rooms[room][step % 2] !== 'undefined') {
+        if (rooms['roomStep'][room] !== -1) {
+          turn = rooms[room][step % 2].id
+        }
       }
     }
+    return turn
   }
-  return turn
-}
 
 
 module.exports = {
@@ -160,7 +165,7 @@ module.exports = {
   addUser,
   removeUser,
   removeUserByID,
-  calculateWinner,
+  calculateResult,
   getTurn,
   nextTurn,
 }

@@ -24,7 +24,7 @@ const {
   addUser,
   removeUser,
   removeUserByID,
-  calculateWinner,
+  calculateResult,
   getTurn,
   nextTurn,
 } = require('./functions.js')
@@ -74,11 +74,9 @@ io.on('connect', (socket) => {
     console.log(`Next turn ${room}`)
     const sendTurn = nextTurn(room)
     setSquaresMapArray(parseInt(room), squares)
-    console.log(squaresMap)
-    const win = calculateWinner(squares)
-    console.log('The winner is', win)
+    const result = calculateResult(squares)
     io.in(room).emit('sendTurn', sendTurn)
-    io.in(room).emit('sendWin', win)
+    io.in(room).emit('sendResult', result)
     io.in(room).emit('sendSquares', squares)
   })
 
