@@ -73,7 +73,9 @@ io.on('connect', (socket) => {
     setSquaresObjArray(room, squares)
     const result = calculateResult(squares)
     io.in(room).emit('sendTurn', sendTurn)
-    io.in(room).emit('sendResult', result)
+    if (result !== null) {
+      io.in(room).emit('sendResult', result)
+    }
     io.in(room).emit('sendSquares', squares)
   })
 
