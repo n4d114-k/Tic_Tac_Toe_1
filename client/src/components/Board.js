@@ -16,7 +16,7 @@ let clicked = false;
 function Board({ location }) {
   const alert = useAlert();
   const [show, setShow] = useState(false);
-  const [modal, setModal] = useState([]);
+  const [modal, setModal] = useState('');
   const [leave, setLeave] = useState(false);
   const [room, setRoom] = useState('');
   const [myStats, setMyStats] = useState({});
@@ -131,10 +131,10 @@ function Board({ location }) {
     if (result) {
       setShow(true);
       if (result === 'draw') {
-        setModal([1, 'It\'s a draw']);
+        setModal('It\'s a draw');
       } else {
         let winner = myStats.type ? myStats.name : oponentStats.name;
-        setModal([1, `Winner is ${winner}!`, winner]);
+        setModal(`Winner is ${winner}!`);
       }
     }
   });
@@ -177,11 +177,11 @@ function Board({ location }) {
           <InfoBar currentRoom={currentRoom} yourID={myStats.id} turn={turn} />
         ) : null}
         {leave ? <Redirect to='/' /> : null}
-        {modal[0] === 1 ? (
+        { (modal) ? (
           <ModalAlert
               show={show}
               handleClose={handleClose}
-              title={`${modal[1]}`}
+              title={`${modal}`}
               body={`You Won!`}
               button='Leave the Room'
               action={leaveRoom}
