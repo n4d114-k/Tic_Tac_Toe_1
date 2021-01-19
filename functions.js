@@ -10,7 +10,7 @@ const addToSquaresObj = (room) => {
 }
 
 const removeFromSquaresObj = (room) => {
-  delete squaresObj.room
+  delete squaresObj[room]
   return squaresObj
 }
 
@@ -19,7 +19,9 @@ const getSquaresObj = (room) => {
 }
 
 const setSquaresObjArray = (room, id, type) => {
-  squaresObj[room][id] = type;
+  if (squaresObj[room][id] === null) {
+    squaresObj[room][id] = type;
+  }
   return squaresObj
 }
 
@@ -74,7 +76,6 @@ const removeUser = (socket) => {
     if (key !== 'roomStep') {
       delete rooms[Object.values(socket.rooms)[0]]
       delete rooms['roomStep'][Object.values(socket.rooms)[0]]
-      console.log(rooms, ' from removeUser')
       socket.broadcast.to(Object.values(socket.rooms)[0]).emit('leave')
     }
   })

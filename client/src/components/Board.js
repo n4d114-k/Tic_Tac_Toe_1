@@ -153,8 +153,6 @@ function Board({ location }) {
       clicked === false
     ) {
 
-      //const newSquares = squares.slice();
-      //newSquares[event.target.id] = myStats.type;
       clicked = true;
 
       const id = event.target.id;

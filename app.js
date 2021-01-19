@@ -90,7 +90,6 @@ io.on('connect', (socket) => {
     const roomsAvailable = Object.keys(rooms).filter(
       (key) => key !== 'roomStep'
     )
-    console.log([...socket.rooms][1]);
     const roomToRemove = [...socket.rooms][1]
     removeFromSquaresObj(roomToRemove)
     socket.broadcast.emit('roomsAvailable', roomsAvailable)
