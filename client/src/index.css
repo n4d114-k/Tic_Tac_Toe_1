@@ -124,8 +124,8 @@ a {
 }
 
 .game {
-  width: 304px;
-  height: 304px;
+  width: 229px;
+  height: 229px;
   display: flex;
   flex-wrap: wrap;
   background-color: var(--dark-blue);
@@ -136,12 +136,12 @@ a {
 .board-cell {
   background-color: var(--isabelline-gray);
   font-family: sans-serif;
-  height: 100px;
-  width: 100px;
+  height: 75px;
+  width: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
+  font-size: 50px;
   font-weight: bold;
   color: var(--dark-red);
 }
