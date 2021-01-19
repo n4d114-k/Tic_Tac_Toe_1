@@ -33,6 +33,7 @@ function Board({ location }) {
         const playerId = oponentStats.id;
         const currentTurn = turn;
         socket.emit('nextTurn', { room, squares, playerId, currentTurn });
+        console.log('nextTurn emitting');
         clicked = false;
       }
     }

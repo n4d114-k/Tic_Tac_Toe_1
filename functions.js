@@ -5,7 +5,7 @@ let squaresObj = {}
 
 const addToSquaresObj = (room) => {
   const roomId = room[0]
-  squaresObj[roomId] = Array(9).fill(null)
+  squaresObj[roomId] = {board: Array(9).fill(null)}
   return squaresObj
 }
 
@@ -15,12 +15,12 @@ const removeFromSquaresObj = (room) => {
 }
 
 const getSquaresObj = (room) => {
-  return squaresObj[room]
+  return squaresObj[room].board
 }
 
 const setSquaresObjArray = (room, id, type) => {
-  if (squaresObj[room][id] === null) {
-    squaresObj[room][id] = type;
+  if (squaresObj[room].board[id] === null) {
+    squaresObj[room].board[id] = type;
   }
   return squaresObj
 }
@@ -54,8 +54,9 @@ const addUser = ({ id, name, room }) => {
     }
   }
 
-  rooms['roomStep'] = { ...rooms['roomStep'], [room]: step }
+  squaresObj[room]['roomStep'] = step
   rooms[room].push({ id, name, room, type, player })
+  squaresObj[room][type] = { id, name, player }
   const user = {
     id,
     name,
@@ -63,7 +64,7 @@ const addUser = ({ id, name, room }) => {
     type,
     player,
     currentRoom: rooms[room],
-    roomStep: rooms['roomStep'][room]
+    roomStep: squaresObj[room]['roomStep']
   }
 
   console.log(`${name} with socket.id:${id} entered the room: ${room}`)
@@ -73,11 +74,8 @@ const addUser = ({ id, name, room }) => {
 const removeUser = (socket) => {
   let roomData = {}
   Object.keys(rooms).forEach((key, index) => {
-    if (key !== 'roomStep') {
-      delete rooms[Object.values(socket.rooms)[0]]
-      delete rooms['roomStep'][Object.values(socket.rooms)[0]]
-      socket.broadcast.to(Object.values(socket.rooms)[0]).emit('leave')
-    }
+    delete rooms[Object.values(socket.rooms)[0]]
+    socket.broadcast.to(Object.values(socket.rooms)[0]).emit('leave')
   })
   return { roomData }
 }
@@ -85,13 +83,10 @@ const removeUser = (socket) => {
 const removeUserByID = (id) => {
   let roomData = ''
   Object.keys(rooms).forEach((key, index) => {
-    if (key !== 'roomStep') {
-      let foundID = rooms[key].findIndex((element) => element.id === id)
-      if (foundID !== -1) {
-        delete rooms[key]
-        delete rooms['roomStep'][key]
-        roomData = key
-      }
+    let foundID = rooms[key].findIndex((element) => element.id === id)
+    if (foundID !== -1) {
+      delete rooms[key]
+      roomData = key
     }
   })
   return roomData
@@ -109,7 +104,6 @@ const removeUserByID = (id) => {
       [0, 4, 8],
       [2, 4, 6],
     ]
-console.log(squares);
     const hesEmptySquares = squares.findIndex((square) => !square) > -1;
     const winer = lines.find(([a, b, c]) => {
         if (
@@ -128,30 +122,12 @@ console.log(squares);
     return null;
   }
 
-  const getTurn = (room) => {
-    let turn = ''
-    if (room !== '') {
-      let step = rooms['roomStep'][room]
-      if (typeof rooms[room][step % 2] !== 'undefined') {
-        if (rooms['roomStep'][room] !== -1) {
-          turn = rooms[room][0].id
-        }
-      }
-    }
-    return turn
-  }
-
   const nextTurn = (room, playerId, currentTurn) => {
     let turn = ''
     if (room !== '') {
-      let step = rooms['roomStep'][room]
-      step = step + 1
-      rooms['roomStep'][room] = step
-      if (typeof rooms[room][step % 2] !== 'undefined') {
-        if (rooms['roomStep'][room] !== -1) {
+        if (squaresObj[room]['roomStep'] !== -1) {
           turn = rooms[room][1].id === currentTurn ? rooms[room][0].id : rooms[room][1].id
         }
-      }
     }
     if(turn === playerId){
       return turn
@@ -169,6 +145,5 @@ module.exports = {
   removeUser,
   removeUserByID,
   calculateResult,
-  getTurn,
   nextTurn,
 }

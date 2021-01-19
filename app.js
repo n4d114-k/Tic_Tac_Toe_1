@@ -25,16 +25,13 @@ const {
   removeUser,
   removeUserByID,
   calculateResult,
-  getTurn,
   nextTurn,
 } = require('./functions.js')
 
 io.on('connect', (socket) => {
   console.log(`Connection to server established with socket.id: ${socket.id}`)
 
-  const roomsAvailable = Object.keys(rooms).filter(
-    (key) => key !== 'roomStep'
-  )
+  const roomsAvailable = Object.keys(rooms)
 
     socket.on('getRoom', (room, callback) => {
     addToSquaresObj(room)
@@ -55,22 +52,22 @@ io.on('connect', (socket) => {
     socket.join(user.room)
     io.in(user.room).emit('getSquaresObj', getSquaresObj(room))
     socket.broadcast.to(user.room).emit('roomData', user)
-    const roomsAvailable = Object.keys(rooms).filter(
-      (key) => key !== 'roomStep'
-    )
+    const roomsAvailable = Object.keys(rooms)
     socket.broadcast.emit('roomsAvailable', roomsAvailable)
     console.log('Available rooms:', rooms)
     if (user) return callback(user)
+    squaresObj[room]['currentTurn'] = squaresObj[room]['X'].id
   })
 
-  socket.on('getTurn', (room) => {
-    const sendTurn = getTurn(room)
+  socket.on('getTurn', ({ room, squares, playerId, currentTurn }) => {
+    const sendTurn = squaresObj[room]['currentTurn']
     socket.to(room).emit('sendTurn', sendTurn)
   })
 
   socket.on('nextTurn', ({ room, squares, playerId, currentTurn }) => {
     const sendTurn = nextTurn(room, playerId, currentTurn)
     setSquaresObjArray(room, squares)
+    squaresObj[room]['currentTurn'] = currentTurn
     const result = calculateResult(squares)
     io.in(room).emit('sendTurn', sendTurn)
     if (result !== null) {
@@ -86,9 +83,7 @@ io.on('connect', (socket) => {
 
   socket.on('leaveRoom', () => {
     const { roomData } = removeUser(socket, socket.id)
-    const roomsAvailable = Object.keys(rooms).filter(
-      (key) => key !== 'roomStep'
-    )
+    const roomsAvailable = Object.keys(rooms)
     const roomToRemove = [...socket.rooms][1]
     removeFromSquaresObj(roomToRemove)
     socket.broadcast.emit('roomsAvailable', roomsAvailable)
@@ -97,9 +92,7 @@ io.on('connect', (socket) => {
   socket.on('disconnect', () => {
     const roomData = removeUserByID(socket.id)
     socket.broadcast.to(roomData).emit('leave')
-    const roomsAvailable = Object.keys(rooms).filter(
-      (key) => key !== 'roomStep'
-    )
+    const roomsAvailable = Object.keys(rooms)
     socket.broadcast.emit('roomsAvailable', roomsAvailable)
     console.log('User logged out.')
   })
