@@ -30,7 +30,9 @@ function Board({ location }) {
     '',
     () => {
       if (socket && clicked) {
-        socket.emit('nextTurn', { room, squares });
+        const playerId = oponentStats.id;
+        const currentTurn = turn;
+        socket.emit('nextTurn', { room, squares, playerId, currentTurn });
         clicked = false;
       }
     }
