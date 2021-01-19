@@ -16,11 +16,11 @@ app.get("/", (req, res) => {
 });
 
 const {
-  squaresMap,
-  addToSquaresMap,
-  removeFromSquaresMap,
-  getSquaresMap,
-  setSquaresMapArray,
+  squaresObj,
+  addToSquaresObj,
+  removeFromSquaresObj,
+  getSquaresObj,
+  setSquaresObjArray,
   addUser,
   removeUser,
   removeUserByID,
@@ -37,8 +37,8 @@ io.on('connect', (socket) => {
   )
 
     socket.on('getRoom', (room, callback) => {
-    addToSquaresMap(room)
-    console.log(squaresMap)
+    addToSquaresObj(room)
+    console.log(squaresObj)
     const roomExists = Object.keys(rooms).filter((element) => {
       return element === room
     })
@@ -53,7 +53,7 @@ io.on('connect', (socket) => {
     const { error, user } = addUser({ id: socket.id, name, room })
     if (error) return callback(error)
     socket.join(user.room)
-    io.in(user.room).emit('getSquaresMap', squaresMap.get(parseInt(user.room)))
+    io.in(user.room).emit('getSquaresObj', getSquaresObj(room))
     socket.broadcast.to(user.room).emit('roomData', user)
     const roomsAvailable = Object.keys(rooms).filter(
       (key) => key !== 'roomStep'
@@ -73,15 +73,16 @@ io.on('connect', (socket) => {
   socket.on('nextTurn', ({ room, squares }) => {
     console.log(`Next turn ${room}`)
     const sendTurn = nextTurn(room)
-    setSquaresMapArray(parseInt(room), squares)
+    setSquaresObjArray(room, squares)
     const result = calculateResult(squares)
     io.in(room).emit('sendTurn', sendTurn)
     io.in(room).emit('sendResult', result)
     io.in(room).emit('sendSquares', squares)
   })
 
-  socket.on('sendSquares', ({room, newSquares}) => {
-    io.in(room).emit('sendSquares', newSquares)
+  socket.on('sendSquares', ({room, id, type}) => {
+    setSquaresObjArray(room, id, type)
+    io.in(room).emit('sendSquares', getSquaresObj(room))
   })
 
   socket.on('leaveRoom', () => {
@@ -89,8 +90,9 @@ io.on('connect', (socket) => {
     const roomsAvailable = Object.keys(rooms).filter(
       (key) => key !== 'roomStep'
     )
-    const roomToRemove = parseInt([...socket.rooms][1])
-    removeFromSquaresMap(roomToRemove)
+    console.log([...socket.rooms][1]);
+    const roomToRemove = [...socket.rooms][1]
+    removeFromSquaresObj(roomToRemove)
     socket.broadcast.emit('roomsAvailable', roomsAvailable)
   })
 

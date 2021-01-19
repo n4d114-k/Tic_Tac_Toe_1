@@ -72,9 +72,9 @@ function Board({ location }) {
   }, [location.search]);
 
   useEffect(() => {
-    socket.on('getSquaresMap', (getSquaresMap) => {
-      if (Array.isArray(getSquaresMap)) {
-        setSquares(getSquaresMap);
+    socket.on('getSquaresObj', (getSquaresObj) => {
+      if (Array.isArray(getSquaresObj)) {
+        setSquares(getSquaresObj);
       }
     });
   }, [setSquares]);
@@ -153,10 +153,14 @@ function Board({ location }) {
       clicked === false
     ) {
 
-      const newSquares = squares.slice();
-      newSquares[event.target.id] = myStats.type;
+      //const newSquares = squares.slice();
+      //newSquares[event.target.id] = myStats.type;
       clicked = true;
-      socket.emit('sendSquares',{ room, newSquares })
+
+      const id = event.target.id;
+      const type = myStats.type;
+
+      socket.emit('sendSquares',{ room, id, type })
     }
   };
 
