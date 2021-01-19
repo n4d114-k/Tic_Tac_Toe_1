@@ -134,14 +134,14 @@ console.log(squares);
       let step = rooms['roomStep'][room]
       if (typeof rooms[room][step % 2] !== 'undefined') {
         if (rooms['roomStep'][room] !== -1) {
-          turn = rooms[room][step % 2].id
+          turn = rooms[room][0].id
         }
       }
     }
     return turn
   }
 
-  const nextTurn = (room, playerId) => {
+  const nextTurn = (room, playerId, currentTurn) => {
     let turn = ''
     if (room !== '') {
       let step = rooms['roomStep'][room]
@@ -149,7 +149,7 @@ console.log(squares);
       rooms['roomStep'][room] = step
       if (typeof rooms[room][step % 2] !== 'undefined') {
         if (rooms['roomStep'][room] !== -1) {
-          turn = rooms[room][step % 2].id
+          turn = rooms[room][1].id === currentTurn ? rooms[room][0].id : rooms[room][1].id
         }
       }
     }

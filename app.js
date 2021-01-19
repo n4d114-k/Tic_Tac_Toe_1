@@ -64,15 +64,12 @@ io.on('connect', (socket) => {
   })
 
   socket.on('getTurn', (room) => {
-    console.log(`Get turn in ${room}`)
     const sendTurn = getTurn(room)
     socket.to(room).emit('sendTurn', sendTurn)
-    console.log(sendTurn)
   })
 
-  socket.on('nextTurn', ({ room, squares, playerId }) => {
-    console.log(`Next turn ${room}`)
-    const sendTurn = nextTurn(room, playerId)
+  socket.on('nextTurn', ({ room, squares, playerId, currentTurn }) => {
+    const sendTurn = nextTurn(room, playerId, currentTurn)
     setSquaresObjArray(room, squares)
     const result = calculateResult(squares)
     io.in(room).emit('sendTurn', sendTurn)
