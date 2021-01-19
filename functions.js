@@ -1,26 +1,28 @@
 rooms = {}
 
-let squaresMap = new Map()
+let squaresObj = {}
 
 
-const addToSquaresMap = (room) => {
-  squaresMap.set(room[0], Array(9).fill(null))
-  return squaresMap
+const addToSquaresObj = (room) => {
+  const roomId = room[0]
+  squaresObj[roomId] = Array(9).fill(null)
+  return squaresObj
 }
 
-const removeFromSquaresMap = (room) => {
-  squaresMap.delete(room)
-  return squaresMap
+const removeFromSquaresObj = (room) => {
+  delete squaresObj[room]
+  return squaresObj
 }
 
-const getSquaresMap = (room) => {
-  return squaresMap.get(room)
+const getSquaresObj = (room) => {
+  return squaresObj[room]
 }
 
-const setSquaresMapArray = (room, squares) => {
-  squaresMap.delete(room)
-  squaresMap.set(room, squares)
-  return squaresMap
+const setSquaresObjArray = (room, id, type) => {
+  if (squaresObj[room][id] === null) {
+    squaresObj[room][id] = type;
+  }
+  return squaresObj
 }
 
 const addUser = ({ id, name, room }) => {
@@ -74,7 +76,6 @@ const removeUser = (socket) => {
     if (key !== 'roomStep') {
       delete rooms[Object.values(socket.rooms)[0]]
       delete rooms['roomStep'][Object.values(socket.rooms)[0]]
-      console.log(rooms, ' from removeUser')
       socket.broadcast.to(Object.values(socket.rooms)[0]).emit('leave')
     }
   })
@@ -110,7 +111,6 @@ const removeUserByID = (id) => {
     ]
 console.log(squares);
     const hesEmptySquares = squares.findIndex((square) => !square) > -1;
-    console.log('hesEmptySquares', hesEmptySquares);
     const winer = lines.find(([a, b, c]) => {
         if (
           squares[a] &&
@@ -158,11 +158,11 @@ console.log(squares);
 
 
 module.exports = {
-  squaresMap,
-  addToSquaresMap,
-  removeFromSquaresMap,
-  getSquaresMap,
-  setSquaresMapArray,
+  squaresObj,
+  addToSquaresObj,
+  removeFromSquaresObj,
+  getSquaresObj,
+  setSquaresObjArray,
   addUser,
   removeUser,
   removeUserByID,
