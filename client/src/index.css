@@ -29,10 +29,6 @@ body {
   user-select: none;
 }
 
-#root {
-
-}
-
 .logo-wrapper {
   background-color: var(--dark-blue);
 }
@@ -119,38 +115,38 @@ a {
 
 /* Game Page Styles */
 
-.game {
-  margin: 0 30%;
-}
-
-.card-body {
-  padding: 20% 20% 0 20%;
-}
-
-.row-container {
-  border: 1px solid var(--dark-blue);
-  margin: 20px;
-}
-
-.row {
+.game-wrapper {
+  height: 80vh;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.game {
+  width: 229px;
+  height: 229px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--dark-blue);
+  justify-content: space-between;
+  align-content: space-between;
 }
 
 .board-cell {
+  background-color: var(--isabelline-gray);
   font-family: sans-serif;
-  height: 70px;
-  width: 70px;
-  border: 1px solid var(--dark-blue);
+  height: 75px;
+  width: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
+  font-size: 50px;
   font-weight: bold;
   color: var(--dark-red);
 }
 
-.game button {
+.game-wrapper button {
   margin: 2vh 1vw;
   padding: 0 10px;
   border: 2px solid var(--light-red);
@@ -159,7 +155,7 @@ a {
   font-family: inherit;
 }
 
- .game button:hover {
+ .game-wrapper  button:hover {
   cursor: pointer;
   border: 2px solid var(--light-red);
   background-color: var(--light-red);
@@ -169,7 +165,6 @@ a {
 .info-bar {
   color: var(--paynes-gray);
   display: inline-flex;
-  margin: 2vh 0 0 6vw;
 }
 
 .info-bar > div {
