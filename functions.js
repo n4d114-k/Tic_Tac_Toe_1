@@ -141,7 +141,7 @@ console.log(squares);
     return turn
   }
 
-  const nextTurn = (room) => {
+  const nextTurn = (room, playerId) => {
     let turn = ''
     if (room !== '') {
       let step = rooms['roomStep'][room]
@@ -153,7 +153,9 @@ console.log(squares);
         }
       }
     }
-    return turn
+    if(turn === playerId){
+      return turn
+    }
   }
 
 

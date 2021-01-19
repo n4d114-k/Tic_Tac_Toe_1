@@ -70,9 +70,9 @@ io.on('connect', (socket) => {
     console.log(sendTurn)
   })
 
-  socket.on('nextTurn', ({ room, squares }) => {
+  socket.on('nextTurn', ({ room, squares, playerId }) => {
     console.log(`Next turn ${room}`)
-    const sendTurn = nextTurn(room)
+    const sendTurn = nextTurn(room, playerId)
     setSquaresObjArray(room, squares)
     const result = calculateResult(squares)
     io.in(room).emit('sendTurn', sendTurn)
